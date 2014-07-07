@@ -19,7 +19,7 @@ module Perimeter
           #
           def find!(id)
             operation = find id
-            raise FindingError, operation.exception if operation.failure?
+            raise FindingError, operation.meta.exception if operation.failure?
             operation.object
           end
 

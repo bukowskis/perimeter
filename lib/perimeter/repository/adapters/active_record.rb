@@ -10,6 +10,7 @@ module Perimeter
         def self.included(base)
           base.class_eval do
             include Perimeter::Repository
+            include Perimeter::Repository::Adapters::Abstract
           end
 
           base.extend ClassMethods

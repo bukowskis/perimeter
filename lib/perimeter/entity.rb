@@ -9,6 +9,10 @@ module Perimeter
       end
     end
 
+    def to_param
+      return if id.blank?
+      id.to_s
+    end
 
     #included do
     #  include Virtus.model

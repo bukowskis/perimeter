@@ -24,6 +24,11 @@ module Perimeter
         @entity_class || default_entity_class
       end
 
+      # Convenience Wrapper
+      def backend
+        backend_class
+      end
+
       private
 
       def default_backend_class
@@ -50,14 +55,13 @@ module Perimeter
         end
       end
 
-      def backend_instances_to_entities(records)
+      def records_to_entities(records)
         return [] if records.blank?
-        entities = Array(records).map { |record| backend_instance_to_entity(record) }
-        entities.length > 1 ? entities : entities.first
+        Array(records).map { |record| record_to_entity(record) }
       end
 
-      def backend_instance_to_entity(record)
-        return nil if record.blank?
+      def record_to_entity(record)
+        return if record.blank?
 
         begin
           entity = entity_class.new record.attributes
