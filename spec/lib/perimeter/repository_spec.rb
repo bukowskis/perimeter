@@ -5,7 +5,6 @@ require 'cities/backend'
 require 'admin/countries'
 require 'admin/countries/backend'
 require 'admin/cars'
-#require 'admin/vehicles'
 require 'admin/vehicles/backend'
 
 describe Perimeter::Repository do
