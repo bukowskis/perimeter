@@ -22,8 +22,8 @@ module Perimeter
           # Success is defined as "the record could be found", everything else is a failure.
           #
           def find(id)
-            record = backend_class.find id
-            entity = backend_instance_to_entity record
+            record = backend.find id
+            entity = record_to_entity record
             Operations.success :record_found, object: entity
 
           rescue ::ActiveRecord::RecordNotFound => exception
