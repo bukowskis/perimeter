@@ -1,10 +1,15 @@
+require 'hooks'
+
 module Perimeter
   module Repository
-    extend ActiveSupport::Concern
 
-    included do
-      include Hooks
-      define_hook :after_conversion
+    def self.included(base)
+      base.extend ClassMethods
+
+      base.class_eval do
+        include ::Hooks
+        define_hook :after_conversion
+      end
     end
 
     module ClassMethods
@@ -24,37 +29,51 @@ module Perimeter
       def default_backend_class
         backend_class_name = name + '::Backend'
         backend_class_name.constantize
-      rescue NameError
-        raise NameError, %{Repository "#{name}" expects the Backend "#{backend_class_name}" to be defined.}
+
+      rescue NameError => exception
+        if exception.message.to_s == "uninitialized constant #{backend_class_name}"
+          raise NameError, %{Repository "#{name}" expects the Backend "#{backend_class_name}" to be defined.}
+        else
+          raise exception
+        end
       end
 
       def default_entity_class
-        name.singularize.constantize
-      rescue NameError
-        raise NameError, %{Repository "#{name}" expects the Entity "#{name.singularize}" to be defined.}
+        entity_class_name = name.singularize
+        entity_class_name.constantize
+
+      rescue NameError => exception
+        if exception.message.to_s == "uninitialized constant #{entity_class_name}"
+          raise NameError, %{Repository "#{name}" expects the Backend "#{entity_class_name}" to be defined.}
+        else
+          raise exception
+        end
+      end
+
+      def backend_instances_to_entities(records)
+        return [] if records.blank?
+        entities = Array(records).map { |record| backend_instance_to_entity(record) }
+        entities.length > 1 ? entities : entities.first
+      end
+
+      def backend_instance_to_entity(record)
+        return nil if record.blank?
+
+        begin
+          entity = entity_class.new record.attributes
+        rescue ArgumentError => exception
+          if exception.message.to_s == 'wrong number of arguments(1 for 0)'
+            raise ArgumentError, %{The Class "#{entity_class}" appears not to be an Entity, because the initializer does not accept one argument. Did you "include Perimeter::Entity"?}
+          else
+            raise exception
+          end
+        end
+
+        run_hook :after_conversion, entity, record
+        entity
       end
 
     end
 
-    def backend_class
-      self.class.backend_class
-    end
-
-    def entity_class
-      self.class.entity_class
-    end
-
-    def backend_instances_to_entities(backend_instances)
-      return [] unless backend_instances.present?
-      entities = Array(backend_instances).map { |backend_instance| backend_instance_to_entity(backend_instance) }
-      entities.length > 1 ? entities : entities.first
-    end
-
-    def backend_instance_to_entity(backend_instance)
-      return nil unless backend_instance.present?
-      entity = entity_class.new(backend_instance.attributes)
-      run_hook :after_conversion, entity, backend_instance
-      entity
-    end
   end
 end
