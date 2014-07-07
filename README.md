@@ -1,6 +1,6 @@
 # Perimeter
 
-**[perimeter](https://en.wikipedia.org/wiki/Perimeter) |pəˈrɪmɪtə| noun** -  the continuous line forming the boundary of a closed geometrical figure, alt.  the outermost parts or boundary of an area or object: *the perimeter of the garden*.
+> **[perimeter](https://en.wikipedia.org/wiki/Perimeter) |pəˈrɪmɪtə| noun** -  the continuous line forming the boundary of a closed geometrical figure, alt.  the outermost parts or boundary of an area or object: *the perimeter of the garden*.
 
 As developers we are used to draw strict lines in our code, such as MVC and ORM. There is much buzz about the repository pattern and this gem is an attempt to introduce an implementation convention for it across our applications.
 
@@ -15,7 +15,7 @@ models
   \- product.rb           # Entity
 ```
 
-The persitence backend is tucked away in a directory and may look like the following code. You are not supposed to interact with the backend at all in your code.
+The persistence backend is tucked away in a directory and may look like the following code. You are not supposed to interact with the backend at all in your code.
 
 ```ruby
 module Products
