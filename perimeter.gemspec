@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = %w{ lib }
 
   spec.add_dependency 'virtus'
-  spec.add_dependency 'activesupport'
+  spec.add_dependency 'activesupport', '>= 2.3.14'
   spec.add_dependency 'activemodel'
   spec.add_dependency 'hooks'
   spec.add_dependency 'leaflet'
