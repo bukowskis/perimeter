@@ -18,9 +18,6 @@ module Perimeter
 
         module ClassMethods
 
-          # Returns an Operation instance holding an Entity as object.
-          # Success is defined as "the record could be found", everything else is a failure.
-          #
           def find(id)
             record = backend.find id
             entity = record_to_entity record
@@ -32,6 +29,20 @@ module Perimeter
           rescue StandardError => exception
             Trouble.notify exception
             Operations.failure :backend_error, exception: exception
+          end
+
+          def destroy(id)
+            record = backend.find_by_id id
+            if record
+              entity = record_to_entity record
+              if record.destroy
+                Operations.success :record_destroyed, object: entity
+              else
+                Operations.failure :destruction_failed
+              end
+            else
+              Operations.success :nothing_to_destroy
+            end
           end
 
         end
