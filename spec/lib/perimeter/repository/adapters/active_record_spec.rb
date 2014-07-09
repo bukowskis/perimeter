@@ -65,7 +65,7 @@ describe Perimeter::Repository::Adapters::ActiveRecord do
 
     context 'the backend had problems' do
       before do
-        allow( Games::Backend ).to receive(:find).and_raise EOFError
+        allow( Games::Backend ).to receive(:find).and_raise NoMemoryError
         expect( Trouble ).to receive(:notify)
       end
 
@@ -82,10 +82,50 @@ describe Perimeter::Repository::Adapters::ActiveRecord do
       end
 
       it 'holds the exception' do
-        expect( object ).to be_instance_of EOFError
+        expect( object ).to be_instance_of NoMemoryError
+      end
+    end
+  end
+
+  describe '.find!' do
+    let(:finding) { Games.find! id }
+
+    context 'the record exists' do
+      before do
+        expect( Trouble).to_not receive :notify
+        allow( Games::Backend ).to receive(:find).and_return record
+      end
+
+      it 'is an Entity' do
+        expect( finding ).to be_instance_of Game
+      end
+
+      it 'has all attributes on the Entity' do
+        expect( finding.attributes ).to eq record_attributes
       end
     end
 
+    context 'the record does not exist' do
+      before do
+        expect( Trouble).to_not receive :notify
+        allow( Games::Backend ).to receive(:find).and_raise ::ActiveRecord::RecordNotFound
+      end
+
+      it 'raises an Exception' do
+        expect { finding }.to raise_error Perimeter::Repository::FindingError
+      end
+    end
+
+    context 'the backend had problems' do
+      before do
+        allow( Games::Backend ).to receive(:find).and_raise IOError
+        expect( Trouble ).to receive(:notify)
+      end
+
+      it 'raises an Exception' do
+        expect { finding }.to raise_error Perimeter::Repository::FindingError
+      end
+    end
   end
 
 end

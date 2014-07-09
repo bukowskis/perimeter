@@ -1,15 +1,12 @@
 require 'active_support/concern'
 require 'trouble'
+require 'perimeter/repository/error'
 
 module Perimeter
   module Repository
     module Adapters
       module Abstract
         extend ActiveSupport::Concern
-
-        FindingError     = Class.new(StandardError)
-        CreationError    = Class.new(StandardError)
-        DestructionError = Class.new(StandardError)
 
         module ClassMethods
 
@@ -39,7 +36,7 @@ module Perimeter
           #
           def find!(id)
             operation = find id
-            raise FindingError, operation.meta.exception if operation.failure?
+            raise ::Perimeter::Repository::FindingError, operation.meta.exception if operation.failure?
             operation.object
           end
 
@@ -47,7 +44,7 @@ module Perimeter
           #
           def create!(id)
             operation = create id
-            raise CreationError, operation.meta.exception if operation.failure?
+            raise ::Perimeter::Repository::CreationError, operation.meta.exception if operation.failure?
             operation.object
           end
 
@@ -55,7 +52,7 @@ module Perimeter
           #
           def destory!(id)
             operation = destroy id
-            raise DestructionError, operation.meta.exception if operation.failure?
+            raise ::Perimeter::Repository::DestructionError, operation.meta.exception if operation.failure?
             true
           end
 

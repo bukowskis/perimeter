@@ -22,7 +22,7 @@ module Perimeter
           rescue ::ActiveRecord::RecordNotFound => exception
             Operations.failure :record_not_found, object: exception
 
-          rescue StandardError => exception
+          rescue Exception => exception
             ::Trouble.notify exception
             Operations.failure :backend_error, object: exception
           end

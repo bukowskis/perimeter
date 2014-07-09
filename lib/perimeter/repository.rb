@@ -6,6 +6,8 @@ module Perimeter
   module Repository
     extend ActiveSupport::Concern
 
+    OperationError = Class.new StandardError
+
     included do
       include ::Hooks
       define_hook :after_conversion
