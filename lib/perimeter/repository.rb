@@ -15,6 +15,10 @@ module Perimeter
 
     module ClassMethods
 
+      # ––––––––––––––––––––––
+      # Class name definitions
+      # ––––––––––––––––––––––
+
       def backend_class(*args)
         @backend_class = args.first unless args.empty?
         @backend_class || default_backend_class
@@ -31,6 +35,10 @@ module Perimeter
       end
 
       private
+
+      # –––––––––––––––––––
+      # Default Class names
+      # –––––––––––––––––––
 
       def default_backend_class
         backend_class_name = name + '::Backend'
@@ -56,6 +64,21 @@ module Perimeter
         end
       end
 
+      # ––––––––––
+      # Conversion
+      # ––––––––––
+
+      def attributes_to_entity(attributes)
+        entity_class.new attributes
+      end
+
+      def entity_to_record(entity)
+        attributes = entity.attributes
+        attributes.delete :id
+        attributes.delete 'id'
+        backend.new attributes
+      end
+
       def records_to_entities(records)
         return [] if records.blank?
         Array(records).map { |record| record_to_entity(record) }
@@ -74,7 +97,7 @@ module Perimeter
           end
         end
 
-        run_hook :after_conversion, entity, record
+        entity.id = record.id
         entity
       end
 

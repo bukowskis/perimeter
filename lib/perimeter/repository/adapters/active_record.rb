@@ -28,24 +28,22 @@ module Perimeter
           end
 
           def create(attributes)
-            entity = entity_class.new attributes
+            entity = attributes_to_entity attributes
             # Triggering validation hooks which may change the state of the Entity
-            entity_is_valid = entity.valid?
-            # Transferring the Entity into a Record
-            record = backend.new entity.attributes
-            # Triggering validation hooks on the Backend
-            record_is_valid = record.valid?
+            entity_invalid = entity.invalid?
+            # Converting the (now possibly modified) Entity into a Record
+            record = entity_to_record entity
+            # Triggering validation hooks on the Record to allow for state changes as well
+            record_invalid = record.invalid?
 
-            unless entity_is_valid && record_is_valid
-              # Merging errors from both Entity and Record
-              record.errors.each do |attribute, message|
-                entity.errors.add attribute, message
-              end
+            if entity_invalid or record_invalid
+              # Merging errors from Record into Entity
+              record.errors.each { |attribute, message| entity.errors.add attribute, message }
               return Operations.failure(:validation_failed, object: entity)
             end
 
-            id = attributes[:id] || attributes['id'] || entity.id || record.id
-            if find(id).success?
+            id = entity.id.presence || record.id.presence || attributes[:id].presence || attributes['id'].presence
+            if id && backend.find_by_id(id)
               return Operations.failure :record_already_exists
             end
 
