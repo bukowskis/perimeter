@@ -1,11 +1,8 @@
 require 'spec_helper'
 
 require 'cities'
-require 'cities/backend'
 require 'admin/countries'
-require 'admin/countries/backend'
 require 'admin/cars'
-require 'admin/vehicles/backend'
 
 describe Perimeter::Repository do
 
@@ -26,6 +23,17 @@ describe Perimeter::Repository do
       it 'finds the right classe' do
         expect( Admin::Cars.backend_class ).to be Admin::Vehicles::Backend
       end
+    end
+  end
+
+  describe '.backend' do
+    it 'is a (read-only) shortcut to #backend_class' do
+      Cities.stub(:backend_class).and_return 'backend_class says hello'
+      expect( Cities.backend ).to eq 'backend_class says hello'
+    end
+
+    it 'refuses to take arguments' do
+      expect { Cities.backend 'something custom' }.to raise_error(ArgumentError)
     end
   end
 

@@ -1,12 +1,23 @@
+# ActiveModel is not defined as gem dependency but we still depend on it (for now).
+# With this technique we can use Perimeter in Rails 2 applications by backporting activemodel manually into the vendor directory.
+require 'active_model'
+
+require 'active_support/core_ext/module'
+require 'active_support/concern'
 require 'virtus'
 
 module Perimeter
   module Entity
+    extend ActiveSupport::Concern
 
-    def self.included(base)
-      base.class_eval do
-        include Virtus.model
-      end
+    included do
+      include Virtus.model
+
+      extend  ActiveModel::Naming
+      include ActiveModel::Conversion
+      include ActiveModel::Validations
+
+      attribute :id
     end
 
     def to_param
@@ -14,13 +25,13 @@ module Perimeter
       id.to_s
     end
 
-    #included do
-    #  include Virtus.model
-    #
-    #  include ActiveModel::Conversion
-    #  include ActiveModel::Validations
-    #  extend  ActiveModel::Naming
-    #end
+    def persisted?  # Rails 3+
+      id.present?
+    end
+
+    def new_record?  # Rails 2
+      !persisted?
+    end
 
   end
 end

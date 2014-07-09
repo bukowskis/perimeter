@@ -1,15 +1,14 @@
 require 'hooks'
+require 'active_support/concern'
+require 'active_support/core_ext'
 
 module Perimeter
   module Repository
+    extend ActiveSupport::Concern
 
-    def self.included(base)
-      base.extend ClassMethods
-
-      base.class_eval do
-        include ::Hooks
-        define_hook :after_conversion
-      end
+    included do
+      include ::Hooks
+      define_hook :after_conversion
     end
 
     module ClassMethods
@@ -49,7 +48,7 @@ module Perimeter
 
       rescue NameError => exception
         if exception.message.to_s == "uninitialized constant #{entity_class_name}"
-          raise NameError, %{Repository "#{name}" expects the Backend "#{entity_class_name}" to be defined.}
+          raise NameError, %{Repository "#{name}" expects the Entity "#{entity_class_name}" to be defined.}
         else
           raise exception
         end

@@ -1,14 +1,13 @@
+require 'active_support/concern'
+
 module Perimeter
   module Backend
     module Adapters
       module ActiveRecord
+        extend ActiveSupport::Concern
 
-        def self.included(base)
-          base.extend ClassMethods
-
-          base.class_eval do
-            set_table_name perimeter_table_name
-          end
+        included do
+          set_table_name perimeter_table_name
         end
 
         module ClassMethods

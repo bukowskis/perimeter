@@ -1,7 +1,7 @@
 require 'perimeter/entity'
 
-class City
+class Game
   include Perimeter::Entity
 
-  attribute :name, String
+  attribute :name
 end
