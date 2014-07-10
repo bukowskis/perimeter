@@ -256,7 +256,6 @@ describe Perimeter::Repository::Adapters::ActiveRecord do
 
       before do
         allow( Games::Backend ).to receive(:new).with(attributes).and_return record
-        #allow( Games::Backend ).to receive(:find_by_id)
         allow( record ).to receive(:save) do |args|
           allow( record ).to receive(:id).and_return 'newly-created-id'
           allow( record ).to receive(:attributes).and_return attributes.merge(id: 'newly-created-id')

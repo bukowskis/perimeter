@@ -72,10 +72,12 @@ module Perimeter
         entity_class.new attributes
       end
 
-      def entity_to_record(entity)
+      def entity_to_record(entity, strip_id: false)
         attributes = entity.attributes
-        attributes.delete :id
-        attributes.delete 'id'
+        if strip_id
+          attributes.delete :id
+          attributes.delete 'id'
+        end
         backend.new attributes
       end
 

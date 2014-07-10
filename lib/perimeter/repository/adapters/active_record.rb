@@ -32,7 +32,7 @@ module Perimeter
             # Triggering validation hooks which may change the state of the Entity
             entity_invalid = entity.invalid?
             # Converting the (now possibly modified) Entity into a Record
-            record = entity_to_record entity
+            record = entity_to_record entity, strip_id: true
             # Triggering validation hooks on the Record to allow for state changes as well
             record_invalid = record.invalid?
 
