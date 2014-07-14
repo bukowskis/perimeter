@@ -20,12 +20,21 @@ module Perimeter
 
           # Returns an Operation instance that MUST hold an Entity as object.
           # Success is defined as "there was no record and now there is one", everything else is a failure.
+          # Validations are run on the Record.
           #
           def create(attributes)
             raise NotImplementedError
           end
 
           # Returns an Operation instance that MAY hold an Entity as object.
+          # Success is defined as "there was a record and now some/all attributes have been updated", everything else is a failure.
+          # NOTE: Whether validations are run on the Record first is backend specific.
+          #
+          def update(id, attributes)
+            raise NotImplementedError
+          end
+
+          # Returns an Operation instance that SHOULD hold the destroyed Entity as object.
           # Success is defined as "after this operation the record is or already was gone", everything else is a failure.
           #
           def destroy(id)

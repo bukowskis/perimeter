@@ -68,13 +68,19 @@ module Perimeter
       # Conversion
       # ––––––––––
 
-      def attributes_to_entity(attributes)
-        entity_class.new attributes
+      def attributes_to_record(attributes, options = {})
+        options.symbolize_keys!
+        if id = options[:add_id]
+          attributes[:id] = id
+        end
+        entity = entity_class.new attributes
+        entity_to_record entity
       end
 
-      def entity_to_record(entity, strip_id: false)
+      def entity_to_record(entity, options = {})
+        options.symbolize_keys!
         attributes = entity.attributes
-        if strip_id
+        if options[:strip_id]
           attributes.delete :id
           attributes.delete 'id'
         end
@@ -98,6 +104,8 @@ module Perimeter
             raise exception
           end
         end
+
+        record.errors.each { |attribute, message| entity.errors.add attribute, message }
 
         entity.id = record.id
         entity

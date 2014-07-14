@@ -16,6 +16,7 @@ module Perimeter
       extend  ActiveModel::Naming
       include ActiveModel::Conversion
       include ActiveModel::Validations
+      include ActiveModel::Validations::Callbacks
 
       attribute :id
     end

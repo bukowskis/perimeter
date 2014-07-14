@@ -19,13 +19,13 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'virtus'
   spec.add_dependency 'activesupport'
   spec.add_dependency 'hooks'
-  spec.add_dependency 'hashie'
   spec.add_dependency 'operation'
-  spec.add_dependency 'leaflet'
   spec.add_dependency 'trouble'
 
-  #spec.add_dependency 'activemodel' # Not compatible with Rails 2
+  #spec.add_dependency 'activemodel' # Not compatible with Rails 2, backport it if neccessary
   spec.add_development_dependency 'activemodel'
+  spec.add_development_dependency 'activerecord'
+  spec.add_development_dependency 'sqlite3'
 
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'guard-rspec'
