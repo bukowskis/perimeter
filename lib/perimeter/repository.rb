@@ -108,7 +108,12 @@ module Perimeter
         record.errors.each { |attribute, message| entity.errors.add attribute, message }
 
         entity.id = record.id
+        after_conversion entity, record
         entity
+      end
+
+      def after_conversion(entity, record)
+        # Override me
       end
 
     end
