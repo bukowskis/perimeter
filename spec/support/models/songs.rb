@@ -10,7 +10,9 @@ module Songs
     record_to_entity record
   end
 
-  def self.after_conversion(entity, record)
+  after_conversion :add_song_time_to_title
+
+  def self.add_song_time_to_title(entity, record)
     entity.title = "#{entity.title} (#{record.length})"
   end
 end
