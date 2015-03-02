@@ -106,7 +106,6 @@ module Perimeter
         end
 
         if record.errors.present?
-          entity.errors = ActiveModel::Errors.new(entity)
           record.errors.each { |attribute, message| entity.errors.add attribute, message }
         end
 
