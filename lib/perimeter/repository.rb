@@ -105,8 +105,10 @@ module Perimeter
           end
         end
 
-        entity.errors = ActiveModel::Errors.new(entity)
-        record.errors.each { |attribute, message| entity.errors.add attribute, message }
+        if record.errors.present?
+          entity.errors = ActiveModel::Errors.new(entity)
+          record.errors.each { |attribute, message| entity.errors.add attribute, message }
+        end
 
         entity.id = record.id
         run_hook :after_conversion, entity, record
