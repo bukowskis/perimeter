@@ -19,7 +19,9 @@ module Perimeter
       include ActiveModel::Validations::Callbacks
 
       attribute :id
+      attr_accessor :errors
     end
+
 
     def to_param
       return if id.blank?
