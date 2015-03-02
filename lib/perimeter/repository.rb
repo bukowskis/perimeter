@@ -105,6 +105,7 @@ module Perimeter
           end
         end
 
+        entity.errors = ActiveModel::Errors.new(entity)
         record.errors.each { |attribute, message| entity.errors.add attribute, message }
 
         entity.id = record.id
